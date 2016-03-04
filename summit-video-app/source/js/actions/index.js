@@ -4,16 +4,36 @@ import URL from '../utils/url';
 import http from 'superagent';
 
 
-export const getThreadDetail = (id) => {
+function createAction (type) {
+	return function (payload) {
+		return {
+			type,
+			payload
+		};
+	};
+};
+
+function apiURL (segment) {
+	return 
+}
+export const throwError = createAction('THROW_ERROR');
+
+export const clearError = createAction('CLEAR_ERROR');
+
+export const updateSearchText = createAction('UPDATE_SEARCH_TEXT');
+
+export const receiveSummits = createAction('RECEIVE_SUMMITS');
+
+export const requestSummits = () => {
 	return (dispatch) => {
-		cancel('GET_THREAD_DETAIL');
-		dispatch(createAction('GET_THREAD_DETAIL'));
-		const url = URL.create(`api/v1/thread/${id}`);
+		cancel('REQUEST_SUMMITS');
+		dispatch({type: 'REQUEST_SUMMITS'});
+		const url = URL.create('videos');
 		const req = http.get(url)
 			.end(responseHandler(dispatch, json => {
-				dispatch(receiveThreadDetail(json));
+				dispatch(receiveSummits(json));
 			}))
-		schedule('GET_THREAD_DETAIL', req);
+		schedule('REQUEST_SUMMITS', req);
 	};
 };
 

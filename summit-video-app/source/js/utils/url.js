@@ -52,6 +52,11 @@ class URL {
 
 		return [baseURL, path].join('/');
 	}
+
+	makeRelative (url) {
+		const replace = this.baseURL.replace(/^\//,'');
+		return url.replace(new RegExp(`^${replace}`), '');
+	}
 }
 
 const SNG = new URL();

@@ -14,42 +14,22 @@
  **/
 class PresentationVideo extends PresentationMaterial
 {
-    private static $db = array
-    (
+    private static $db = array (
         'YouTubeID' => 'Text',
+        'DateUploaded' => 'SS_DateTime',
     );
 
-    private static $has_many = array
-    (
-    );
+	public function getCMSFields()
+	{
+		$f = parent::getCMSFields();
+		$f->addFieldToTab('Root.Main', new TextField('YouTubeID','YouTube ID'));
+		return $f;
+	}
 
-    private static $defaults = array
-    (
-    );
 
-    private static $many_many = array
-    (
-    );
-
-    static $many_many_extraFields = array(
-    );
-
-    private static $has_one = array
-    (
-    );
-
-    private static $summary_fields = array
-    (
-    );
-
-    private static $searchable_fields = array
-    (
-    );
-
-    public function getCMSFields()
-    {
-        $f = parent::getCMSFields();
-        $f->addFieldToTab('Root.Main', new TextField('YouTubeID','YouTube ID'));
-        return $f;
-    }
+	public function onBeforeWrite () {
+		if($this->isChanged('YouTubeID')) {
+			$this->DateUploaded = SS_DateTime::now()->Rfc2822();
+		}
+	}
 }

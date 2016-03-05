@@ -1,0 +1,5 @@
+---
+Name: summit-video-app
+---
+SummitVideoApp:
+  default_video_limit: 50

@@ -22,18 +22,18 @@ export const clearError = createAction('CLEAR_ERROR');
 
 export const updateSearchText = createAction('UPDATE_SEARCH_TEXT');
 
-export const receiveSummits = createAction('RECEIVE_SUMMITS');
+export const receiveVideos = createAction('RECEIVE_VIDEOS');
 
-export const requestSummits = () => {
+export const requestVideos = () => {
 	return (dispatch) => {
-		cancel('REQUEST_SUMMITS');
-		dispatch({type: 'REQUEST_SUMMITS'});
-		const url = URL.create('videos');
+		cancel('REQUEST_VIDEOS');
+		dispatch({type: 'REQUEST_VIDEOS'});
+		const url = URL.create('api/videos');
 		const req = http.get(url)
 			.end(responseHandler(dispatch, json => {
-				dispatch(receiveSummits(json));
+				dispatch(receiveVideos(json));
 			}))
-		schedule('REQUEST_SUMMITS', req);
+		schedule('REQUEST_VIDEOS', req);
 	};
 };
 

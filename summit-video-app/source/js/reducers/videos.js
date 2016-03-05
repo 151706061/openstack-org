@@ -11,6 +11,8 @@ export const videos = function (videos, action) {
 	}
 
 	switch(action.type) {
+		case 'RECEIVE_VIDEOS':
+			return action.payload			
 		default:
 			return videos;
 	}

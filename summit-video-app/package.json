@@ -15,6 +15,7 @@
     "dropzone": "^4.3.0",
     "form-serialize": "~0.6.0",
     "markdown": "^0.5.0",
+    "moment": "^2.11.2",
     "object-assign": "^4.0.1",
     "react": "^0.14.0",
     "react-bootstrap": "^0.28.3",

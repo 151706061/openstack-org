@@ -1,58 +1,73 @@
 import React from 'react';
 import URL from '../../utils/url';
 import { connect } from 'react-redux';
-import GalleryItem from '../ui/GalleryItem';
+import VideoItem from '../containers/VideoItem';
 import GalleryPanel from '../ui/GalleryPanel';
+import moment from 'moment';
+import { requestVideos } from '../../actions';
 
-const AllVideos = ({
-	videos,
-	handleVideoClick
-}) => {		
-	const collatedVideos = [];
-	videos = videos.sort((a, b) => a.date > b.date ? -1 : 1);
+class AllVideos extends React.Component {
+	
+	componentDidMount () {
+		this.props.requestVideos();
+	}
 
-	let children = [], next;
-	videos.forEach((video, i) => {
-		children.push(video);
-		next = i+1;
-		if(videos[next] && videos[next].date !== video.date) {
-			collatedVideos.push(children);
-			children = [];			
-		}
-	});
+	render () {
+		const {videos} = this.props;
+		const collatedVideos = [];
+		let children = [], next;
+		
+		videos.forEach((video, i) => {
+			children.push(video);
+			next = i+1;
+			if(videos[next] && videos[next].date !== video.date) {
+				collatedVideos.push(children);
+				children = [];			
+			}
+		});
 
-	return (
-		<div className="all-videos">
-			{collatedVideos.map(videoSet => {				
-				let title = videoSet[0].date;
-				return (
-					<GalleryPanel key={title} title={title}>
-						{videoSet.map(video => (
-							<GalleryItem
-								key={video.id}
-								imageUrl={video.image}
-								imageCaption={video.summit.title}
-								title={video.title}
-								subtitle={video.speaker.name}
-								link={URL.create(`show/${video.id}`)}
-								onItemClicked={handleVideoClick}
-							/>
-						))}
-					</GalleryPanel>
-				);
+		
+		let today = moment().format('YYYY-MM-DD');
 
-			})}
-		</div>
-	);
+		return (
+			<div className="all-videos">
+				{collatedVideos.map((videoSet,i) => {
+					let title;
+					let {date} = videoSet[0];
+					
+					if(moment(date).format('YYYY-MM-DD') === today) {
+						title = 'Uploaded today';
+					}
+					else if(moment(date).add(1, 'days').format('YYYY-MM-DD') === today) {
+						title = 'Uploaded yesterday';
+					}
+					else {
+						title = 'Uploaded ' + moment(videoSet[0].date).format('MMMM D, YYYY');
+					}
+
+					return (
+						<GalleryPanel key={i} title={title}>
+							{videoSet.map(video => (
+								<VideoItem key={video.id} video={video} />
+							))}						
+						</GalleryPanel>
+					);
+
+				})}
+			</div>
+		);		
+	}	
 }
 
 export default connect (
-	state => ({
-		videos: state.videos
-	}),
+	state => {
+		return {
+			videos: state.videos
+		}
+	},
 	dispatch => ({
-		handleVideoClick (link) {
-			dispatch(routeActions.push(link));
+		requestVideos () {
+			dispatch(requestVideos());
 		}
 	})
 )(AllVideos);

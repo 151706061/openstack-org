@@ -3,18 +3,31 @@ import { connect } from 'react-redux';
 import { routeActions } from 'react-router-redux';
 import URL from '../../utils/url';
 import PreviewImagePanel from '../ui/PreviewImagePanel';
+import moment from 'moment';
+
+const LatestUploadPanel = ({
+	video,
+	onLinkClicked
+}) => (
+	<PreviewImagePanel
+		className='latest-upload'
+		imageUrl={video.thumbnailURL}
+		title={video.title}
+		subtitle={`
+			${moment(video.date).format('MMMM D, YYYY')} | 
+			${video.speakers.map(s => s.name).join(', ')} 
+		`}
+		link={URL.create(`show/${video.id}`)}
+		onLinkClicked={onLinkClicked}
+	 />
+);
 
 export default connect (
 	(state, ownProps) => ({
-		className: ownProps.className,
-		imageUrl: 'http://lorempixel.com/107/58/',
-		title: 'Latest Upload: "Why design matters in open source projects"',
-		subtitle: 'February 24, 2016 | Jonathan Bryce',
-		link: 'events'
 	}),
 	dispatch => ({
 		onLinkClicked (link) {
 			dispatch(routeActions.push(URL.create(link)));
 		}
 	})
-)(PreviewImagePanel);
+)(LatestUploadPanel);

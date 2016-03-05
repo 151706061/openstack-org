@@ -7,82 +7,34 @@ class SummitVideoApp extends Page {
 
 class SummitVideoApp_Controller extends Page_Controller {
 	
+
 	private static $url_handlers = [
 		'api' => 'handleAPI',
 		'$Action/$ID/$OtherID' => 'handleIndex'
 	];
 
+	
+	private static $allowed_actions = [
+		'handleAPI',
+	];
 
+	
 	public function getJSONConfig () {
 		return Convert::array2json([
 			'baseURL' => $this->Link(),
 			'initialState' => [
-				'videos' => [
-					[
-						'id' => 1,
-						'date' => 'Today',
-						'title' => 'Video one',
-						'presentation' => [
-							'title' => 'Presentation one'
-						],
-						'summit' => [
-							'title' => 'Austin summit'
-						],
-						'speaker' => [
-							'name' => 'Jonathan Bryce'
-						],
-						'image' => 'http://lorempixel.com/232/130/'
-					],
-					[
-						'id' => 2,
-						'date' => 'Today',
-						'title' => 'Video two',
-						'presentation' => [
-							'title' => 'Presentation two'
-						],
-						'summit' => [
-							'title' => 'Austin summit'
-						],
-						'speaker' => [
-							'name' => 'Jonathan Bryce'
-						],
-						'image' => 'http://lorempixel.com/232/130/'
-					],
-					[
-						'id' => 3,
-						'date' => 'Yesterday',
-						'title' => 'Video three',
-						'presentation' => [
-							'title' => 'Presentation three'
-						],
-						'summit' => [
-							'title' => 'Tokyo summit'
-						],
-						'speaker' => [
-							'name' => 'Jonathan Bryce'
-						],
-						'image' => 'http://lorempixel.com/232/130/'
-					],
-					[
-						'id' => 4,
-						'date' => 'February 12, 2016',
-						'title' => 'Video four',
-						'presentation' => [
-							'title' => 'Presentation four'
-						],
-						'summit' => [
-							'title' => 'Vancouver summit'
-						],
-						'speaker' => [
-							'name' => 'Jonathan Bryce'
-						],
-						'image' => 'http://lorempixel.com/232/130/'
-					]
-
-				]
+				'videos' => []
 			]
 		]);
 	}
+
+
+	public function handleAPI (SS_HTTPRequest $r) {
+		$handler = new SummitVideoApp_API($this);
+		
+		return $handler->handleRequest($r, DataModel::inst());
+	}
+
 
 	public function IsDev() {
 		return Director::isDev();
@@ -109,12 +61,45 @@ class SummitVideoApp_API extends RequestHandler {
 
 
 	public function __construct(SummitVideoApp_Controller $parent) {
+		parent::__construct();
 		$this->parent = $parent;
 	}
 
 
 	public function videos(SS_HTTPRequest $r) {
+		$videos = PresentationVideo::get()
+					->limit(SummitVideoApp::config()->default_video_limit)
+					->sort('LastEdited', 'DESC');
 
+		$response = [];
+		foreach($videos as $v) {
+			$response[] = $this->createVideoJSON($v);
+		}
+
+		return (new SS_HTTPResponse(Convert::array2json($response), 200))
+					->addHeader('Content-Type', 'application/json');
+	}
+
+
+	protected function createVideoJSON(PresentationVideo $v) {		
+		$speakers = array_map(function ($s) {
+			return [
+				'id' => $s->ID,
+				'name' => $s->getName()
+			];
+		}, $v->Presentation()->Speakers()->toArray());
+
+		return [
+			'id' => $v->ID,
+			'title' => $v->Name,
+			'date' => $v->obj('LastEdited')->Format('Y-m-d'),
+			'thumbnailURL' => "http://img.youtube.com/vi/{$v->YouTubeID}/2.jpg",
+			'summit' => [
+				'id' => $v->Presentation()->SummitID,
+				'title' => $v->Presentation()->Summit()->Title
+			],
+			'speakers' => $speakers
+		];
 	}
 
 }

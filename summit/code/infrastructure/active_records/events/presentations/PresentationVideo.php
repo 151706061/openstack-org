@@ -17,6 +17,21 @@ class PresentationVideo extends PresentationMaterial
     private static $db = array (
         'YouTubeID' => 'Text',
         'DateUploaded' => 'SS_DateTime',
+        'Highlighted' => 'Boolean'
+    );
+
+    private static $summary_fields = array (
+    	'Name' => 'Title',
+    	'Presentation.Summit.Title' => 'Summit',
+    	'PresentationID' => 'Presentation ID',
+    	'SpeakersCSV' => 'Speakers',
+    	'Featured.Nice' => 'Featured?',
+    	'Highlighted.Nice' => 'Highlighted?'
+    );
+
+    private static $better_buttons_actions = array (
+    	'setasfeatured',
+    	'unsetasfeatured'
     );
 
 	public function getCMSFields()
@@ -26,8 +41,48 @@ class PresentationVideo extends PresentationMaterial
 		return $f;
 	}
 
+	public function getBetterButtonsActions()
+	{
+		$f = parent::getBetterButtonsActions();
+		if(!$this->Featured) {
+			$f->push(BetterButtonCustomAction::create('setasfeatured', 'Set as the featured video')
+	    				->setRedirectType(BetterButtonCustomAction::REFRESH)
+	    				->setSuccessMessage('This is now the featured video'));		
+		}
+		else {
+			$f->push(BetterButtonCustomAction::create('unsetasfeatured', 'Unmark as featured video')
+	    				->setRedirectType(BetterButtonCustomAction::REFRESH)
+	    				->setSuccessMessage('This is now the featured video'));					
+		}
 
-	public function onBeforeWrite () {
+	}
+
+	public function setasfeatured($data, $form) 
+	{
+		foreach(PresentationVideo::get()->filter('Featured', true) as $v) {
+			$v->Featured = false;
+			$v->write();
+		}
+
+		$this->Featured = true;
+		$this->write();
+	}
+
+	public function unsetasfeatured($data, $form) 
+	{
+		$this->Featured = false;
+		$this->write();
+	}
+
+
+	public function getSpeakersCSV() {
+		return implode(', ', array_map(function ($s) {
+			return $s->getName();
+		}, $this->Presentation()->Speakers()->toArray()));
+	}
+
+	public function onBeforeWrite () 
+	{
 		if($this->isChanged('YouTubeID')) {
 			$this->DateUploaded = SS_DateTime::now()->Rfc2822();
 		}

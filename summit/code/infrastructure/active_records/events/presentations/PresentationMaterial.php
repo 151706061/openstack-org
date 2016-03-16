@@ -64,9 +64,9 @@ class PresentationMaterial extends DataObject
         );
 
         $f->addFieldToTab('Root.Main', new TextField('Name','Name'));
-        $f->addFieldToTab('Root.Main', new HtmlEditorField('Description','Description'));
         $f->addFieldToTab('Root.Main', new CheckboxField('DisplayOnSite','Display On Site'));
         $f->addFieldToTab('Root.Main', new CheckboxField('Featured','Is Featured'));
+        $f->addFieldToTab('Root.Main', new HtmlEditorField('Description','Description'));
 
         return $f;
     }

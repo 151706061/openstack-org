@@ -17,7 +17,8 @@ class PresentationVideo extends PresentationMaterial
     private static $db = array (
         'YouTubeID' => 'Text',
         'DateUploaded' => 'SS_DateTime',
-        'Highlighted' => 'Boolean'
+        'Highlighted' => 'Boolean',
+        'Views' => 'Int'
     );
 
     private static $summary_fields = array (
@@ -36,8 +37,11 @@ class PresentationVideo extends PresentationMaterial
 
 	public function getCMSFields()
 	{
-		$f = parent::getCMSFields();
-		$f->addFieldToTab('Root.Main', new TextField('YouTubeID','YouTube ID'));
+		$f = parent::getCMSFields();		
+		$f->addFieldToTab('Root.Main', new CheckboxField('Highlighted'),'Description');
+		$f->addFieldToTab('Root.Main', new ReadonlyField('Views'),'Description');
+		$f->addFieldToTab('Root.Main', new TextField('YouTubeID','YouTube ID'),'Description');
+		
 		return $f;
 	}
 
@@ -54,6 +58,8 @@ class PresentationVideo extends PresentationMaterial
 	    				->setRedirectType(BetterButtonCustomAction::REFRESH)
 	    				->setSuccessMessage('This is now the featured video'));					
 		}
+
+		return $f;
 
 	}
 
@@ -83,6 +89,7 @@ class PresentationVideo extends PresentationMaterial
 
 	public function onBeforeWrite () 
 	{
+		parent::onBeforeWrite();
 		if($this->isChanged('YouTubeID')) {
 			$this->DateUploaded = SS_DateTime::now()->Rfc2822();
 		}

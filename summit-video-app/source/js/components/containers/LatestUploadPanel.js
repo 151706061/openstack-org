@@ -17,7 +17,7 @@ const LatestUploadPanel = ({
 			${moment(video.date).format('MMMM D, YYYY')} | 
 			${video.speakers.map(s => s.name).join(', ')} 
 		`}
-		link={URL.create(`show/${video.id}`)}
+		link={URL.create(`video/${video.id}`)}
 		onLinkClicked={onLinkClicked}
 	 />
 );
@@ -27,7 +27,7 @@ export default connect (
 	}),
 	dispatch => ({
 		onLinkClicked (link) {
-			dispatch(routeActions.push(URL.create(link)));
+			dispatch(routeActions.push(link));
 		}
 	})
 )(LatestUploadPanel);

@@ -1,8 +1,8 @@
-export const summits = function (state, action = {}) {
+export const speakers = function (state, action = {}) {
 	if(!state) {
 		try {
 			if(window && window.VideoAppConfig) {
-				state = window.VideoAppConfig.initialState.summits;
+				state = window.VideoAppConfig.initialState.speakers;
 			}
 		}
 		catch (e) {
@@ -14,12 +14,12 @@ export const summits = function (state, action = {}) {
 	}
 
 	switch(action.type) {
-		case 'REQUEST_SUMMITS':
+		case 'REQUEST_SPEAKERS':
 			return {
 				...state,
 				loading: true
-			}
-		case 'RECEIVE_SUMMITS':
+			};
+		case 'RECEIVE_SPEAKERS':
 			return {
 				...action.payload.response,
 				loading: false

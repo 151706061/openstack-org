@@ -8,8 +8,9 @@ import { routeActions } from 'react-router-redux';
 export default connect (
 	state => ({
 		action: URL.create('search'),
-		currentSearch: state.main.search || state.router.location.query.search,
-		placeholder: 'Search by title, topic, presenter, or event'		
+		currentSearch: state.main.search,
+		placeholder: 'Search by title, topic, presenter, or event',
+		className: 'video-search-form'
 	}),
 	dispatch => ({
 		onSearchTyped (e) {

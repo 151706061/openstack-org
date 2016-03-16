@@ -16,7 +16,6 @@ URL.setBaseURL(baseURL);
 
 document.addEventListener('DOMContentLoaded', function init() {
   if (document.getElementById('video-app')) {
-  console.log(baseURL);	
     render(
       <Provider store={store} children={Routes(baseURL)} />,
       document.getElementById('video-app')

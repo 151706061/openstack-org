@@ -7,22 +7,22 @@ import URL from '../../utils/url';
 
 const children = [
 	<LinkButton link='featured'>Featured & Popular</LinkButton>,
-	<LinkButton link='/'>All Videos</LinkButton>,
-	<LinkButton link='events'>Events</LinkButton>,
+	<LinkButton link=''>All Videos</LinkButton>,
+	<LinkButton link='summits'>Summits</LinkButton>,
 	<LinkButton link='speakers'>Speakers</LinkButton>,
 ];
 export default connect (
 	(state, ownProps) => {
-		console.log(state.router.location.pathname, URL.makeRelative(state.router.location.pathname));
+		const activeLink = URL.makeRelative(state.router.location.pathname);
 		return {
-		className: ownProps.className,
-		children,
-		activeLink: URL.makeRelative(state.router.location.pathname)
+			className: ownProps.className,
+			children,
+			activeLink
 		}
 	},
 	dispatch => ({
-		onLinkClicked (link) {
-			dispatch(routeActions.push(URL.create(link)));
+		onLinkClicked (link) {			
+			dispatch(routeActions.push(URL.create(link || '/')));
 		}
 	})
 )(LinkBar);

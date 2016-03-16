@@ -11,7 +11,7 @@ const LinkBar = ({
 		{children.map((c,i) => (
 			React.cloneElement(c, {
 				onLinkClicked,
-				active: c.props.link === activeLink,
+				active: c.props.link === activeLink.split('/')[0],
 				key: i
 			}, c.props.children)
 		))}

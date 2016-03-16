@@ -14,8 +14,5 @@ const GalleryPanel = ({
 	</div>	
 );
 
-GalleryPanel.propTypes = {
-	children: ensureChild('GalleryItem', 'GalleryPanel')
-};
 
 export default GalleryPanel;

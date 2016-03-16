@@ -22,6 +22,7 @@ export const responseHandler = (dispatch, success, errorHandler) => {
 				errorHandler(err, res);
         	}
         	else {
+        		console.log(err, res);
 				dispatch(throwError(GENERIC_ERROR));
         	}
         }

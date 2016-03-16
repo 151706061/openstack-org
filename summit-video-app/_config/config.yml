@@ -3,3 +3,4 @@ Name: summit-video-app
 ---
 SummitVideoApp:
   default_video_limit: 50
+  popular_video_view_threshold: 10

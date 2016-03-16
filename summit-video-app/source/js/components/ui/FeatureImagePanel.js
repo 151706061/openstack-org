@@ -23,16 +23,18 @@ class FeatureImagePanel extends React.Component {
 			link
 		} = this.props;
 
+		const autoLink = (el) => {
+			return link ? <a href={link} onClick={this.handleLinkClicked}>{el}</a> : el;
+		};
+
 		return (
 			<div className={className}>
 				<div className="feature-image">
-					{link && <a onClick={this.handleLinkClicked} href={link}><img src={imageUrl} /></a>}
-					{!link && <img src={imageUrl} />}					
+					{autoLink(<img src={imageUrl} />)}
 				</div>
 				<div className="feature-meta">
 					<h3>
-						{link && <a onClick={this.handleLinkClicked} href={link}>{title}</a>}
-						{!link && title}
+						{autoLink(title)}
 					</h3>
 					{subtitle &&
 						<h4>{subtitle}</h4>

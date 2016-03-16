@@ -1,22 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchSpeakerVideos } from '../../actions';
+import { fetchSummitVideos } from '../../actions';
 import DateGroupedVideoList from '../views/DateGroupedVideoList';
 import RouterLink from '../containers/RouterLink';
 
-class SpeakerDetail extends React.Component {
+class SummitDetail extends React.Component {
 
 	componentDidMount () {
-		const {speaker} = this.props.videos;
+		const {summit} = this.props.videos;
 
-		if(!speaker || speaker.id != this.props.params.id) {
-			this.props.fetchVideos();	
+		if(!summit || summit.id != this.props.params.id) {
+			this.props.requestVideos();	
 		}
 	}
 
 	componentWillReceiveProps(nextProps) {
 		if(nextProps.params.id !== this.props.params.id) {
-			this.props.fetchVideos();
+			this.props.requestVideos();
 		}
 	}
 
@@ -26,10 +26,10 @@ class SpeakerDetail extends React.Component {
 		}
 		return (
 			<div>
-				{this.props.speaker &&
+				{this.props.summit &&
 				<div>
-					<h2>{this.props.speaker.name}</h2>
-					<h4><RouterLink link='speakers'>All speakers</RouterLink></h4>
+					<h2>{this.props.summit.title}</h2>
+					<h4><RouterLink link='summits'>All summits</RouterLink></h4>
 				</div>
 				}
 				<DateGroupedVideoList videos={this.props.videos} />
@@ -40,18 +40,17 @@ class SpeakerDetail extends React.Component {
 
 export default connect (
 	(state, ownProps) => {
-		const {speakerVideos} = state.videos;
 		return {
-			speaker: speakerVideos.speaker,
-			videos: speakerVideos.results,
-			loading: speakerVideos.loading
+			summit: state.videos.summitVideos.summit,
+			videos: state.videos.summitVideos.results,
+			loading: state.videos.loading
 		}
 	},
 	(dispatch, ownProps) => {
 		return {
-			fetchVideos () {
-				dispatch(fetchSpeakerVideos(ownProps.params.id));
+			requestVideos () {
+				dispatch(fetchSummitVideos(ownProps.params.id));
 			}
 		}
 	}
-)(SpeakerDetail);
+)(SummitDetail);

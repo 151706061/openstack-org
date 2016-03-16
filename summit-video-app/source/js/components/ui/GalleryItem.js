@@ -9,7 +9,7 @@ class GalleryItem extends React.Component {
 	}
 
 	handleClick (e) {
-		if(this.props.onItemClicked) {
+		if(this.props.onItemClicked) {		
 			e.preventDefault();
 			return this.props.onItemClicked(this.props.link);
 		}
@@ -30,7 +30,7 @@ class GalleryItem extends React.Component {
 		};
 
 		return (
-			<div className={className} style={{float: 'left'}}>
+			<div className={className}>
 				<div className="gallery-image">
 					{autoLink(<img src={imageUrl} />)}
 					<div className="gallery-image-caption">

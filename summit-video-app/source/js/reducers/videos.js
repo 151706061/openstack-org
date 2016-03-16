@@ -1,20 +1,39 @@
-export const videos = function (videos, action) {
-	if(!videos) {
+import { 
+	allVideos, 
+	summitVideos, 
+	speakerVideos, 
+	highlightedVideos,
+	popularVideos,
+	searchVideos 
+} from './childVideoReducers';
+
+export const videos = function (state, action = {}) {
+	if(!state) {
 		try {
 			if(window && window.VideoAppConfig) {
-				videos = window.VideoAppConfig.initialState.videos;
+				state = window.VideoAppConfig.initialState.videos;
 			}
 		}
 		catch (e) {
-			videos = [];
+			state = {
+				allVideos: allVideos(),
+				summitVideos: summitVideos(),
+				speakerVideos: speakerVideos(),
+				highlightedVideos: highlightedVideos(),
+				popularVideos: popularVideos(),
+				searchVideos: searchVideos()
+			};
 		}
 	}
 
-	switch(action.type) {
-		case 'RECEIVE_VIDEOS':
-			return action.payload			
-		default:
-			return videos;
-	}
+	return {
+		...state,
+		allVideos: allVideos(state.allVideos, action),
+		summitVideos: summitVideos(state.summitVideos, action),
+		speakerVideos: speakerVideos(state.speakerVideos, action),
+		highlightedVideos: highlightedVideos(state.highlightedVideos, action),
+		popularVideos: popularVideos(state.popularVideos, action),
+		searchVideos: searchVideos(state.searchVideos, action)	
+	};
 };
 

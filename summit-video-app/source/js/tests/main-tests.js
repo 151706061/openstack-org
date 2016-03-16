@@ -6,13 +6,13 @@ const initialState = reducer(undefined, {});
 
 describe('Main tests', () => {
 	it('should update the search query', () => {
-		expect(reducer(undefined, Actions.updateSearchText('test'))).toEqual({
+		expect(reducer(initialState, Actions.updateSearchText('test'))).toEqual({
 			...initialState,
 			search: 'test'
 		})
 	});
 	it('should display errors', () => {
-		expect(reducer(undefined, Actions.throwError('Big problem'))).toEqual({
+		expect(reducer(initialState, Actions.throwError('Big problem'))).toEqual({
 			...initialState,
 			errorMsg: 'Big problem'
 		});

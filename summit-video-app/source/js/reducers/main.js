@@ -4,7 +4,7 @@ export const main = function (
 		search: '',
 		errorMsg: null
 	}, 
-	action) {
+	action = {}) {
 
 		switch(action.type) {
 			case 'THROW_ERROR':

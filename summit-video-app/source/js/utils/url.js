@@ -22,7 +22,12 @@ class URL {
 	}
 
 	create (pathParts, queryParams, windowObj) {
-		windowObj = windowObj || window;
+		try {
+			if(!windowObj) windowObj = window;
+		} catch (e) {
+			if(!windowObj) windowObj = {};
+		}
+		
 		let baseURL = this.baseURL;
 		let path;
 
@@ -49,13 +54,14 @@ class URL {
 
 		baseURL = baseURL.replace(/\/$/,'').replace(/^\//, '');
 		path = path.replace(/\/$/,'').replace(/^\//, '');
-
+		
 		return [baseURL, path].join('/');
 	}
 
 	makeRelative (url) {
 		const replace = this.baseURL.replace(/^\//,'');
-		return url.replace(new RegExp(`^${replace}`), '');
+		return url.replace(new RegExp(`^${replace}`), '')
+				  .replace(/^\//,'');
 	}
 }
 

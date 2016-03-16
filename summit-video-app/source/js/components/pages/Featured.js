@@ -1,10 +1,80 @@
 import React from 'react';
+import URL from '../../utils/url';
+import { connect } from 'react-redux';
+import VideoItem from '../containers/VideoItem';
+import VideoPanel from '../containers/VideoPanel';
+import FeatureImagePanel from '../ui/FeatureImagePanel';
+import { 
+	fetchFeaturedVideo, 
+	fetchHighlightVideos, 
+	fetchPopularVideos 
+} from '../../actions';
 
 class Featured extends React.Component {
+	
+	componentDidMount () {
+		if(!this.props.featuredVideo) {
+			this.props.fetchFeaturedVideo();
+		}
+		if(!this.props.popularVideos.length) {
+			this.props.fetchPopularVideos();
+		}
+		if(!this.props.highlightedVideos.length) {
+			this.props.requestHighlightedVideos();
+		}
+	}
 
 	render () {
-		return <h2>Featured</h2>;
+		if(this.props.loading) {
+			return <div>Loading...</div>
+		}
+
+		const {
+			featuredVideo,
+			popularVideos,
+			highlightedVideos
+		} = this.props;
+
+		return (
+			<div>
+				{this.props.featuredVideo &&
+				<div className='featured-video'>
+					<h3>Don't Miss</h3>
+					<FeatureImagePanel
+						imageUrl={featuredVideo.thumbnailURL}
+						title={featuredVideo.title}
+						subtitle={featuredVideo.speakers.map(s => s.name).join(', ')}
+						link={URL.create(`video/${featuredVideo.id}`)}
+					 />
+				</div>
+				}
+				<VideoPanel videos={highlightedVideos} title='More Highlighted Videos' />
+				<VideoPanel videos={popularVideos} title='Popular Videos' />
+			</div>
+		);
 	}
 }
 
-export default Featured;
+export default connect (
+	state => {
+		const {popularVideos, highlightedVideos} = state.videos;
+		const {featuredVideo} = state.video;
+		return {
+			loading: (featuredVideo && featuredVideo.loading) || popularVideos.loading || highlightedVideos.loading,
+			featuredVideo,
+			popularVideos: popularVideos.results,
+			highlightedVideos: highlightedVideos.results
+		}
+	},
+	dispatch => ({
+		fetchFeaturedVideo () {
+			dispatch(fetchFeaturedVideo());
+		},		
+		requestHighlightedVideos () {
+			dispatch(fetchHighlightVideos());
+		},
+		fetchPopularVideos () {
+			dispatch(fetchPopularVideos());
+		}
+	})
+)(Featured);

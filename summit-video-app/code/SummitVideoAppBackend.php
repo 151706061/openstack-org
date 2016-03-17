@@ -131,7 +131,7 @@ class SummitVideoAppBackend {
 						->innerJoin('Presentation_Speakers','Presentation_Speakers.PresentationSpeakerID = PresentationSpeaker.ID')
 						->innerJoin('Presentation','Presentation.ID = Presentation_Speakers.PresentationID')
 						->sort('COUNT(Presentation_Speakers.ID) DESC')
-						->limit(20)
+						->limit(SummitVideoApp::config()->default_speaker_limit)
 						->alterDataQuery(function ($query) {
 							$query->groupby('PresentationSpeaker.ID');
 						});

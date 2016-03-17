@@ -5,7 +5,6 @@ export const main = function (
 		errorMsg: null
 	}, 
 	action = {}) {
-
 		switch(action.type) {
 			case 'THROW_ERROR':
 				return {

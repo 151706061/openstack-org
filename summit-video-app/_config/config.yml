@@ -3,4 +3,6 @@ Name: summit-video-app
 ---
 SummitVideoApp:
   default_video_limit: 50
+  default_speaker_limit: 20
   popular_video_view_threshold: 10
+  video_poll_interval: 15000

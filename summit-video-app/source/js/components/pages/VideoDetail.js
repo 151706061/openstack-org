@@ -5,7 +5,15 @@ import { fetchVideoDetail } from '../../actions';
 class VideoDetail extends React.Component {
 
 	componentDidMount () {
-		this.props.fetchVideoDetail();
+		if(!this.props.video || this.props.video.id != this.props.params.id) {
+			this.props.fetchVideoDetail();
+		}
+	}
+
+	componentWillReceiveProps (nextProps) {
+		if(!this.props.video || nextProps.video.id != nextProps.params.id) {
+			this.props.fetchVideoDetail();
+		}		
 	}
 
 	render () {
@@ -34,9 +42,12 @@ class VideoDetail extends React.Component {
 }
 
 export default connect (
-	state => ({
-		video: state.videoDetail.video
-	}),
+	state => {
+		console.log(state);
+		return {
+			video: state.videoDetail.video
+		}
+	},
 	(dispatch, ownProps) => ({
 		fetchVideoDetail () {			
 			dispatch(fetchVideoDetail(ownProps.params.id));

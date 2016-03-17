@@ -83,7 +83,8 @@ class SummitVideoApp_Controller extends Page_Controller {
 	public function getJSONConfig () {
 		$config = [
 			'baseURL' => rtrim($this->Link(),'/'),
-			'initialState' => $this->getInitialState()
+			'initialState' => $this->getInitialState(),
+			'pollInterval' => SummitVideoApp::config()->video_poll_interval
 		];
 
 		return Convert::array2json($config);
@@ -101,6 +102,10 @@ class SummitVideoApp_Controller extends Page_Controller {
 
 		if(is_numeric($type)) {
 			$result = $this->backend->getVideoDetail($type);
+			if($result) {
+				$result->Views++;
+				$result->write();
+			}
 		}
 		else if($type === 'latest') {
 			$result = $this->backend->getLatestVideo();
@@ -160,11 +165,15 @@ class SummitVideoApp_Controller extends Page_Controller {
 				$state['video']['featuredVideo'] = $backend->getFeaturedVideo();
 				break;
 			case "video":
-				$state['videoDetail'] = $backend->getVideoDetail($id);
+				$state['videoDetail'] = [
+					'video' => $backend->getVideoDetail($id)
+				];
+				break;
 			case "search":
 				$state['videos']['searchVideos'] = $backend->getVideos(
 					['search' => $this->request->getVar('search')]
 				);
+				break;
 			default:
 				$state['videos']['allVideos'] = $backend->getVideos();
 				break;
